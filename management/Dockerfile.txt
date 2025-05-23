@@ -1,0 +1,25 @@
+# FROM ubuntu:latest
+
+# LABEL maintaine#r="TuNombre <tu.email@ejemplo.com>"
+# LABEL description="Contenedor de gestión para coordinar otros contenedores"
+
+# # Instalamos herramientas útiles del sistema
+# RUN apk update && apk add --no-cache \
+#     bash \
+#     curl \
+#     wget \
+#     nano \
+#     jq \
+#     net-tools \
+#     iputils \
+#     bind-tools \
+#     docker-cli \
+#     docker-compose \
+#     util-linux \
+#     coreutils
+
+# # Creamos directorio de trabajo
+# WORKDIR /workspace
+
+# # Comando por defecto: mantiene el contenedor corriendo
+# CMD ["tail", "-f", "/dev/null"]

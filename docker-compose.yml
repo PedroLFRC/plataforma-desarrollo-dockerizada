@@ -1,0 +1,170 @@
+services:
+
+  dev:
+    build:
+      context: dev
+    container_name: dev
+    volumes:
+      - ./workspace:/workspace
+    networks:
+      - devnet
+    tty: true
+
+# Configuración contenedor management estándar
+  # management:
+  #   build:
+  #     context: ./management
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   tty: true
+
+  python:
+    build:
+      context: ./tools/python
+    container_name: python
+    volumes:
+      - ./workspace:/workspace
+    networks:
+      - devnet
+    tty: true
+
+  node:
+    build: ./tools/node
+    container_name: node
+    volumes:
+      - ./workspace:/workspace
+
+  java:
+    build:
+      context: ./tools/java
+    container_name: java
+    networks:
+      - devnet
+    volumes:
+      - ./workspace:/workspace
+    tty: true
+
+  php:
+    build:
+      context: ./tools/php
+    container_name: php
+    networks:
+      - devnet
+    volumes:
+      - ./workspace:/workspace
+    tty: true
+
+  dotnet:
+    build: ./tools/dotnet
+    container_name: dotnet
+    volumes:
+      - ./workspace:/workspace
+    networks:
+      - devnet
+    restart: unless-stopped
+
+  apache:
+    build:
+      context: ./tools/apache
+    container_name: apache
+    ports:
+      - "8080:80"
+    volumes:
+      - ./workspace/apache:/usr/local/apache2/htdocs:ro
+    networks:
+      - devnet
+    restart: unless-stopped
+
+# Para despliegue junto Apache
+    # build:
+    #   context: ./tools/php
+    # container_name: php
+    # expose:
+    #   - "9000"
+    # volumes:
+    #   - ./workspace/public-html:/usr/local/apache2/htdocs/
+    # networks:
+    #   - devnet
+    
+  nginx:
+    build:
+      context: ./tools/nginx
+    container_name: nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - ./workspace/nginx:/usr/share/nginx/html:ro
+    networks:
+      - devnet
+    restart: unless-stopped
+
+
+  mysql:
+    build: ./tools/mysql
+    container_name: mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: devuser
+      MYSQL_PASSWORD: devpass
+    volumes:
+      - mysql:/var/lib/mysql
+      - ./workspace/mysql/init:/docker-entrypoint-initdb.d:ro
+      # Opcional: si usas un archivo my.conf
+      # - ./tools/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    networks:
+      - devnet
+
+  postgres:
+    build: ./tools/postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: app_db
+    volumes:
+      - ./workspace/postgres/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - devnet
+    restart: unless-stopped
+
+  mongo:
+    build: ./tools/mongo
+    container_name: mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpass
+      MONGO_INITDB_DATABASE: app_db
+    volumes:
+      - mongo_data:/data/db
+      - ./workspace/mongo/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - devnet
+
+  redis:
+    build: ./tools/redis
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./workspace/redis/redis_data:/data
+    networks:
+      - devnet
+
+volumes:
+  mongo_data:
+  mysql:
+  pgdata:
+  redis_data:
+
+networks:
+  devnet:
+    driver: bridge
+

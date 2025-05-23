@@ -1,0 +1,9 @@
+FROM postgres:16-alpine
+
+# Copiar archivos de configuración si el usuario los habilita
+# (Descomentar COPY si decide usarlos)
+# COPY postgresql.conf /etc/postgresql/postgresql.conf
+# COPY pg_hba.conf /etc/postgresql/pg_hba.conf
+
+# Preparado para extensiones o configuración adicional futura
+

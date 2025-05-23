@@ -1,0 +1,9 @@
+{
+  "name": "Plataforma de Desarrollo Dockerizada",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  "postCreateCommand": "echo 'Listo'",
+  "remoteUser": "root"
+}
+

@@ -1,0 +1,19 @@
+# Archivos temporales
+*.log
+*.tmp
+
+# Contenedores y volúmenes
+.env
+.vscode/
+node_modules/
+vendor/
+__pycache__/
+
+# Docker
+*.pid
+docker/php/vendor
+docker/node/node_modules
+docker/python/__pycache__
+
+# Volúmenes y datos persistentes
+volumes/
